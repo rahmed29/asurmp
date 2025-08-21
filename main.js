@@ -66,6 +66,10 @@ async function realScore(id) {
 }
 
 async function getProfScore(name) {
+  if (name === "Steven Millman") {
+    name = "Steve Millman";
+  }
+
   const payload = {
     query:
       "query NewSearchTeachersQuery(\n$query: TeacherSearchQuery!\n$count: Int\n) {\nnewSearch {\nteachers(query: $query, first: $count) {\ndidFallback\nedges {\ncursor\nnode {\nid\nlegacyId\nfirstName\nlastName\ndepartment\ndepartmentId\nschool {\nlegacyId\nname\nid\n}\n...CompareProfessorsColumn_teacher\n}\n}\n}\n}\n}\n\nfragment CompareProfessorsColumn_teacher on Teacher {\nid\nlegacyId\nfirstName\nlastName\nschool {\nlegacyId\nname\nid\n}\ndepartment\ndepartmentId\navgRating\nnumRatings\nwouldTakeAgainPercentRounded\nmandatoryAttendance {\nyes\nno\nneither\ntotal\n}\ntakenForCredit {\nyes\nno\nneither\ntotal\n}\n...NoRatingsArea_teacher\n...RatingDistributionWrapper_teacher\n}\n\nfragment NoRatingsArea_teacher on Teacher {\nlastName\n...RateTeacherLink_teacher\n}\n\nfragment RatingDistributionWrapper_teacher on Teacher {\n...NoRatingsArea_teacher\nratingsDistribution {\ntotal\n...RatingDistributionChart_ratingsDistribution\n}\n}\n\nfragment RatingDistributionChart_ratingsDistribution on ratingsDistribution {\nr1\nr2\nr3\nr4\nr5\n}\n\nfragment RateTeacherLink_teacher on Teacher {\nlegacyId\nnumRatings\nlockStatus\n}\n",
@@ -94,10 +98,7 @@ async function getProfScore(name) {
       const json = await response.json();
       const profID = json["data"]["newSearch"]["teachers"]["edges"].find(
         (e) => {
-          if (e.node.firstName === "Steven" && e.node.lastName === "Millman") {
-            e.node.firstName === "Steve";
-          }
-          (e.node.firstName + e.node.lastName).replaceAll(" ", "") ===
+          return (e.node.firstName + e.node.lastName).replaceAll(" ", "") ===
             name.replaceAll(" ", "");
         }
       )["node"]["id"];
