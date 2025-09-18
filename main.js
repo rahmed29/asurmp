@@ -50,7 +50,7 @@ async function realScore(id) {
   });
   if (response.ok) {
     const json = await response.json();
-    console.log(json);
+    // console.log(json);
     let status = {
       avgRating: json["data"]["node"]["avgRating"],
       legacyId: json["data"]["node"]["legacyId"],
@@ -65,9 +65,17 @@ async function realScore(id) {
   }
 }
 
+const hardCodedIds = {
+  "Steven Millman": "VGVhY2hlci0yNDc4Nzk4",
+  "Hugh Barnaby": "VGVhY2hlci04Njc2NTg=",
+};
+
 async function getProfScore(name) {
-  if (name === "Steven Millman") {
-    name = "Steve Millman";
+  // Remove any parenthesis and any text within them.
+  name = name.replace(/ \([\s\S]*?\)/g, '');
+
+  if (Object.keys(hardCodedIds).includes(name)) {
+    return await realScore(hardCodedIds[name]);
   }
 
   const payload = {
@@ -98,8 +106,10 @@ async function getProfScore(name) {
       const json = await response.json();
       const profID = json["data"]["newSearch"]["teachers"]["edges"].find(
         (e) => {
-          return (e.node.firstName + e.node.lastName).replaceAll(" ", "") ===
-            name.replaceAll(" ", "");
+          return (
+            (e.node.firstName + e.node.lastName).replaceAll(" ", "") ===
+            name.replaceAll(" ", "")
+          );
         }
       )["node"]["id"];
       return await realScore(profID);
