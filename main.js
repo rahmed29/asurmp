@@ -1,6 +1,6 @@
 const auth = "dGVzdDp0ZXN0";
 
-// scrape auth token from website. Though this seems to be unnessary
+// scrape auth token from website. Though this seems to be unnecessary
 async function getAuth() {
   const init = await fetch("https://www.ratemyprofessors.com/", {
     method: "GET",
@@ -71,7 +71,7 @@ const hardCodedIds = {
 };
 
 async function getProfScore(name) {
-  // Remove any parenthesis and any text within them.
+  // Remove any parenthesis along with any text within them.
   name = name.replace(/ \([\s\S]*?\)/g, '');
 
   if (Object.keys(hardCodedIds).includes(name)) {
@@ -215,7 +215,7 @@ async function rmp(link) {
     // set the prof details to cached results
     let profDetails = fetchedScores.get(link.innerText);
 
-    // of no cached result, then get the ratings and such
+    // if no cached result, then get the ratings and such
     if (!profDetails) {
       profDetails = await getProfScore(link.innerText);
 
@@ -262,7 +262,7 @@ async function rmp(link) {
   }
 }
 
-//Keep checking for list of classes to be loaded in before executing
+// Keep checking for list of classes to be loaded in before executing
 const interval = setInterval(function () {
   if (document.getElementById("class-results") != null) {
     clearInterval(interval);
