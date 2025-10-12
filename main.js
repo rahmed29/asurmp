@@ -66,13 +66,16 @@ async function realScore(id) {
 }
 
 const hardCodedIds = {
-  "Steven Millman": "VGVhY2hlci0yNDc4Nzk4",
   "Hugh Barnaby": "VGVhY2hlci04Njc2NTg=",
+};
+
+const nick = {
+  Steven: "Steve",
 };
 
 async function getProfScore(name) {
   // Remove any parenthesis along with any text within them.
-  name = name.replace(/ \([\s\S]*?\)/g, '');
+  name = name.replace(/ \([\s\S]*?\)/g, "");
 
   if (Object.keys(hardCodedIds).includes(name)) {
     return await realScore(hardCodedIds[name]);
@@ -124,14 +127,20 @@ async function getProfScore(name) {
       };
     }
   } catch (err) {
-    return {
-      avgRating: undefined,
-      legacyId: undefined,
-      name: undefined,
-      avgDifficulty: undefined,
-      wta: undefined,
-      numRatings: undefined,
-    };
+    if (Object.keys(nick).includes(name.split(" ")[0])) {
+      return await getProfScore(
+        nick[name.split(" ")[0]] + " " + name.split(" ")[1]
+      );
+    } else {
+      return {
+        avgRating: undefined,
+        legacyId: undefined,
+        name: undefined,
+        avgDifficulty: undefined,
+        wta: undefined,
+        numRatings: undefined,
+      };
+    }
   }
 }
 
